@@ -84,7 +84,6 @@
             z-index: 10;
             cursor: pointer;
         }
-        #desk-lamp img { width: 100%; display: block; }
         
         .desk-item {
             position: absolute;
@@ -152,7 +151,7 @@
         
         .sticky-note {
             width: 150px; height: 150px; background: #fff9c4;
-            top: 15%; left: 45%; --transform-initial: rotate(10deg);
+            top: 5%; left: 45%; --transform-initial: rotate(3deg);
             transform: var(--transform-initial); padding: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             display: flex; justify-content: center; align-items: center;
@@ -160,6 +159,24 @@
         }
         .sticky-note h4 { font-weight: 600; font-size: 1em; line-height: 1.4; color: #555; }
         
+        .notebook {
+            width: 30%; height: 45%; background: var(--paper-bg);
+            border-radius: 5px; box-shadow: 0 5px 15px var(--shadow-light);
+            top: 45%; left: 60%; --transform-initial: rotate(5deg); transform: var(--transform-initial);
+            padding: 30px;
+        }
+        .notebook h3 { color: var(--accent-color); margin-bottom: 15px; font-size: 1.2em; }
+        .notebook p { 
+            font-family: var(--font-handwriting);
+            font-size: 1.1em; line-height: 1.8; color: #333;
+        }
+        .notebook .cursor {
+            display: inline-block; width: 2px; height: 1.2em;
+            background: #333; vertical-align: text-bottom;
+            animation: blink-notebook 1s step-end infinite;
+        }
+        @keyframes blink-notebook { 50% { opacity: 0; } }
+
         .contact-links {
             position: absolute; bottom: 5%; right: 5%; display: flex;
             gap: 20px; background: rgba(0,0,0,0.05); padding: 10px 15px; border-radius: 10px;
@@ -178,25 +195,35 @@
             <div class="light-cone"></div>
             
             <div id="desk-lamp" class="desk-item" data-depth="0.1">
-                <img src="https://i.imgur.com/uFp336A.png" alt="Desk Lamp">
+                <svg width="250" height="300" viewBox="0 0 132 153" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M110.833 135.529L100.279 26.5" stroke="#555555" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M100.279 26.5L34.5 35.5" stroke="#555555" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M34.5 35.5L46.9922 7.7121L1.00017 4.28793L34.5 35.5Z" fill="#444444"/>
+                    <ellipse cx="116.5" cy="144" rx="15.5" ry="9" fill="#666666"/>
+                </svg>
             </div>
 
             <div class="desk-item laptop" data-depth="0.3" data-modal-target="about-modal">
                 <div class="laptop-content" id="laptop-content"></div>
             </div>
 
+            <div class="desk-item notebook" data-depth="0.6">
+                <h3>My Approach</h3>
+                <p id="notebook-text"></p>
+            </div>
+
             <div class="desk-item project-card" id="project1" data-depth="0.5" data-modal-target="project-ecommerce-modal">
-                <img src="https://i.imgur.com/8i2hgsD.jpg" alt="A beautiful flower">
+                <img src="https://images.pexels.com/photos/298246/pexels-photo-298246.jpeg?cs=srgb&dl=nature-field-flowers-298246.jpg&fm=jpg" alt="Bloom & Stem Project">
                 <span class="photo-caption">Bloom & Stem</span>
             </div>
 
             <div class="desk-item project-card" id="project2" data-depth="0.4" data-modal-target="project-dashboard-modal">
-                <img src="https://i.imgur.com/uR7Y8o7.jpg" alt="A desk calendar representing days">
+                <img src="https://hips.hearstapps.com/hmg-prod/images/summer-flowers-dahlia-1648236478.jpg?crop=0.535xw:1.00xh;0.193xw,0&resize=980:*" alt="Analytics Dashboard Project">
                 <span class="photo-caption">Analytics Dashboard</span>
             </div>
             
             <a href="https://tabitha-dev.github.io/linkhub/" target="_blank" class="desk-item project-card" id="project3" data-depth="0.6">
-                <img src="https://i.imgur.com/fBdL41a.jpg" alt="Abstract network connection lines">
+                <img src="https://c.pxhere.com/photos/a4/1e/lavender_field_flowers_purple_flora_floral_lavender_lavender_flowers_blue-483682.jpg!d" alt="Link Hub Project">
                 <span class="photo-caption">Link Hub</span>
             </a>
             
@@ -217,8 +244,8 @@
 
     <!-- Modals -->
     <div class="modal-overlay" id="about-modal"><div class="modal-content"><span class="modal-close">&times;</span><h2>My Approach</h2><img class="profile-pic" src="https://i.imgur.com/r6p6nZw.png" alt="Tabitha Khadse"><p><strong>I’m a frontend-focused full-stack developer with a background in medical billing and healthcare operations. I enjoy solving real-world problems by blending data, design, and technology.</strong></p><p>Before becoming a developer, I worked with tools like PointClickCare and payer portals to improve billing systems and find patterns in data. That experience taught me how small changes can lead to big results. I focus on the 80/20 rule and prioritize the work that makes the biggest difference.</p><p>Now I build web apps that are simple, helpful, and easy to use. I work with React, Vue, APIs, and sometimes 3D tools like Three.js. My projects include dashboards, voice tools, and interactive websites that help people learn or get things done more easily.</p><p>I like turning ideas into real apps and always look for ways to make things better. Check out my full portfolio at <a href="https://code.tabitha.dev/" target="_blank" class="modal-link">code.tabitha.dev</a>.</p></div></div>
-    <div class="modal-overlay" id="project-ecommerce-modal"><div class="modal-content"><span class="modal-close">&times;</span><h2>Project: Bloom & Stem</h2><img src="https://i.imgur.com/G5v9sJ8.png" alt="Bloom & Stem Screenshot"><p>A modern, stylish e-commerce showcase for a fictional flower shop. This project demonstrates strong HTML, CSS, and JavaScript fundamentals for creating an engaging user experience.</p><p><strong>Key Features:</strong> Dynamic hero slideshow, interactive product filtering by category, "Quick View" modals for product details, and elegant scroll-reveal animations.</p><p>Built with vanilla JavaScript to showcase core web development skills without framework dependencies.</p><a href="ecommerce.html" target="_blank" class="modal-link">View Live Demo &rarr;</a></div></div>
-    <div class="modal-overlay" id="project-dashboard-modal"><div class="modal-content"><span class="modal-close">&times;</span><h2>Project: Analytics Dashboard</h2><img src="https://i.imgur.com/gKj4dBR.png" alt="Analytics Dashboard Screenshot"><p>A sleek, modern analytics dashboard UI incorporating the latest design trends like dark mode and glassmorphism. It uses Chart.js to render beautiful, responsive data visualizations.</p><p><strong>Key Features:</strong> "Bento box" grid layout, advanced data visualizations (area and polar area charts), and a fully responsive design that looks great on any device.</p><p>This project showcases an eye for modern UI/UX and the ability to work with third-party libraries to create powerful data-driven interfaces.</p><a href="dashboard.html" target="_blank" class="modal-link">View Live Demo &rarr;</a></div></div>
+    <div class="modal-overlay" id="project-ecommerce-modal"><div class="modal-content"><span class="modal-close">&times;</span><h2>Project: Bloom & Stem</h2><img src="https://images.pexels.com/photos/298246/pexels-photo-298246.jpeg?cs=srgb&dl=nature-field-flowers-298246.jpg&fm=jpg" alt="Bloom & Stem Screenshot"><p>A modern, stylish e-commerce showcase for a fictional flower shop. This project demonstrates strong HTML, CSS, and JavaScript fundamentals for creating an engaging user experience.</p><p><strong>Key Features:</strong> Dynamic hero slideshow, interactive product filtering by category, "Quick View" modals for product details, and elegant scroll-reveal animations.</p><p>Built with vanilla JavaScript to showcase core web development skills without framework dependencies.</p><a href="ecommerce.html" target="_blank" class="modal-link">View Live Demo &rarr;</a></div></div>
+    <div class="modal-overlay" id="project-dashboard-modal"><div class="modal-content"><span class="modal-close">&times;</span><h2>Project: Analytics Dashboard</h2><img src="https://hips.hearstapps.com/hmg-prod/images/summer-flowers-dahlia-1648236478.jpg?crop=0.535xw:1.00xh;0.193xw,0&resize=980:*" alt="Analytics Dashboard Screenshot"><p>A sleek, modern analytics dashboard UI incorporating the latest design trends like dark mode and glassmorphism. It uses Chart.js to render beautiful, responsive data visualizations.</p><p><strong>Key Features:</strong> "Bento box" grid layout, advanced data visualizations (area and polar area charts), and a fully responsive design that looks great on any device.</p><p>This project showcases an eye for modern UI/UX and the ability to work with third-party libraries to create powerful data-driven interfaces.</p><a href="dashboard.html" target="_blank" class="modal-link">View Live Demo &rarr;</a></div></div>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -276,9 +303,24 @@
             }
             type();
             
+            const notebookTextEl = document.getElementById('notebook-text');
+            const notebookText = "I focus on the 80/20 rule to prioritize work that makes the biggest difference...";
+            let noteCharIndex = 0;
+            function typeNotebook() {
+                if (noteCharIndex < notebookText.length) {
+                    notebookTextEl.innerHTML += notebookText.charAt(noteCharIndex);
+                    noteCharIndex++;
+                    setTimeout(typeNotebook, 60);
+                } else {
+                    notebookTextEl.innerHTML += '<span class="cursor"></span>';
+                }
+            }
+            setTimeout(typeNotebook, 1000);
+
             document.getElementById('desk-lamp').addEventListener('click', () => {
                 container.classList.toggle('lamp-on');
             });
+
             const openModalTriggers = document.querySelectorAll('[data-modal-target]');
             const closeModalTriggers = document.querySelectorAll('.modal-close');
             const overlays = document.querySelectorAll('.modal-overlay');
