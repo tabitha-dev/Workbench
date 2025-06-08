@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabitha Khadse | The Coder's Workbench</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Poppins:wght@400;500;700&family=Kalam:wght@400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --desk-bg: #EAEAEA;
+            --paper-bg: #ffffff;
+            --text-color: #1a1a1a;
+            --accent-color: #5D5FEF;
+            --shadow-light: rgba(0,0,0,0.08);
+            --shadow-dark: rgba(0,0,0,0.15);
+            --font-body: 'Poppins', sans-serif;
+            --font-code: 'Fira Code', monospace;
+            --font-handwriting: 'Kalam', cursive;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: #333;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            overflow: hidden;
+        }
+
+        .workbench-container {
+            width: 95vw;
+            height: 90vh;
+            max-width: 1200px;
+            max-height: 800px;
+            position: relative;
+        }
+        
+        .workbench {
+            width: 100%; height: 100%;
+            background: #D7D7D7;
+            background-image: url('https://www.transparenttextures.com/patterns/wood-grain.png');
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4), inset 0 2px 4px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shadow-overlay {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 20px;
+            background: rgba(0,0,0,0.25);
+            pointer-events: none;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        .light-cone {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            border-radius: 20px;
+            background: radial-gradient(ellipse 50% 60% at 15% 25%, rgba(255, 223, 138, 0.25) 0%, transparent 50%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .lamp-on .shadow-overlay { opacity: 0; }
+        .lamp-on .light-cone { opacity: 1; }
+
+        #desk-lamp {
+            position: absolute; top: -40px; left: 5%;
+            width: 250px;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+            z-index: 10;
+            cursor: pointer;
+        }
+        #desk-lamp img { width: 100%; display: block; }
+        
+        .desk-item {
+            position: absolute;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .desk-item:hover {
+            z-index: 100;
+            box-shadow: 0 25px 50px -15px var(--shadow-dark);
+            transform: var(--transform-initial) scale(1.05);
+        }
+
+        .laptop {
+            width: 48%; height: 58%; background: #2b2b2b;
+            border: 10px solid #1e1e1e; border-radius: 15px;
+            top: 20%; left: 5%; display: flex;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            padding: 20px;
+            align-items: flex-start; justify-content: flex-start;
+            z-index: 15;
+            transform: var(--transform-initial);
+        }
+        .laptop-content {
+            font-family: var(--font-code); color: #E2E8F0;
+            font-size: clamp(0.7rem, 1vw, 0.85rem);
+            white-space: pre-wrap; line-height: 1.5;
+        }
+        .laptop-content .prompt { color: #82aaff; }
+        .laptop-content .keyword { color: #c792ea; }
+        .laptop-content .string { color: #c3e88d; }
+        .laptop-content .link { color: #89ddff; text-decoration: underline; cursor: pointer; }
+        .laptop-content .link:hover { color: #fff; }
+        .laptop-content .cursor {
+            display: inline-block; width: 8px; height: 1.1em;
+            background: #c3e88d; vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        .project-card {
+            width: 25%; height: 32%; background: white;
+            padding: 15px 15px 50px 15px; border-radius: 8px;
+            box-shadow: 0 8px 16px var(--shadow-dark);
+        }
+        .project-card img { width: 100%; height: 100%; object-fit: cover; border: 1px solid #eee;}
+        .project-card .photo-caption {
+            position: absolute; bottom: 15px; left: 50%;
+            transform: translateX(-50%); font-family: var(--font-body); font-weight: 600;
+        }
+        
+        #project1 { top: 10%; right: 20%; --transform-initial: rotate(5deg); transform: var(--transform-initial); z-index: 2; }
+        #project2 { top: 28%; right: 5%; --transform-initial: rotate(-3deg); transform: var(--transform-initial); z-index: 1;}
+        #project3 { top: 58%; right: 25%; --transform-initial: rotate(8deg); transform: var(--transform-initial); z-index: 3; width: 22%; height: 28%;}
+        
+        .document {
+            background: #fafafa; border: 1px solid #ddd;
+            display: flex; justify-content: center; align-items: center;
+            text-align: center; border-radius: 4px; box-shadow: 0 2px 5px var(--shadow-light);
+        }
+        .document h4 { font-size: 0.9em; font-weight: 500;}
+        .resume-doc { width: 22%; height: 12%; bottom: 8%; left: 10%; --transform-initial: rotate(-5deg); transform: var(--transform-initial); padding: 20px; }
+        
+        .sticky-note {
+            width: 150px; height: 150px; background: #fff9c4;
+            top: 15%; left: 45%; --transform-initial: rotate(10deg);
+            transform: var(--transform-initial); padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex; justify-content: center; align-items: center;
+            text-align: center; z-index: 16;
+        }
+        .sticky-note h4 { font-weight: 600; font-size: 1em; line-height: 1.4; color: #555; }
+        
+        .contact-links {
+            position: absolute; bottom: 5%; right: 5%; display: flex;
+            gap: 20px; background: rgba(0,0,0,0.05); padding: 10px 15px; border-radius: 10px;
+            --transform-initial: rotate(0deg); transform: var(--transform-initial);
+        }
+        .contact-links a { text-decoration: none; color: #333; font-size: 24px; transition: transform 0.2s, color 0.2s; }
+        .contact-links a:hover { color: var(--accent-color); transform: scale(1.1); }
+        
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility .4s ease;z-index:1000;padding:1rem}.modal-overlay.is-visible{opacity:1;visibility:visible}.modal-content{background:var(--paper-bg);padding:40px;border-radius:10px;width:100%;max-width:800px;max-height:90vh;overflow-y:auto;transform:scale(.9);transition:transform .4s ease}.modal-overlay.is-visible .modal-content{transform:scale(1)}.modal-close{position:absolute;top:15px;right:15px;font-size:28px;font-weight:700;cursor:pointer;color:#333}.modal-content h2{color:var(--accent-color);margin-bottom:20px}.modal-content img{max-width:100%;border-radius:5px;margin-bottom:20px}.modal-content .profile-pic{width:100px;height:100px;border-radius:50%;object-fit:cover;float:left;margin:0 20px 10px 0}.modal-content p{line-height:1.7;margin-bottom:20px}.modal-content .modal-link{display:inline-block;background-color:var(--accent-color);color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:500;margin-top:10px;transition:background-color .2s}.modal-content .modal-link:hover{background-color:#4a4cc7}
+    </style>
+</head>
+<body>
+    <div class="workbench-container" id="workbench-container">
+        <div class="workbench">
+            <div class="shadow-overlay"></div>
+            <div class="light-cone"></div>
+            
+            <div id="desk-lamp" class="desk-item" data-depth="0.1">
+                <img src="https://i.imgur.com/uFp336A.png" alt="Desk Lamp">
+            </div>
+
+            <div class="desk-item laptop" data-depth="0.3" data-modal-target="about-modal">
+                <div class="laptop-content" id="laptop-content"></div>
+            </div>
+
+            <div class="desk-item project-card" id="project1" data-depth="0.5" data-modal-target="project-ecommerce-modal">
+                <img src="https://i.imgur.com/8i2hgsD.jpg" alt="A beautiful flower">
+                <span class="photo-caption">Bloom & Stem</span>
+            </div>
+
+            <div class="desk-item project-card" id="project2" data-depth="0.4" data-modal-target="project-dashboard-modal">
+                <img src="https://i.imgur.com/uR7Y8o7.jpg" alt="A desk calendar representing days">
+                <span class="photo-caption">Analytics Dashboard</span>
+            </div>
+            
+            <a href="https://tabitha-dev.github.io/linkhub/" target="_blank" class="desk-item project-card" id="project3" data-depth="0.6">
+                <img src="https://i.imgur.com/fBdL41a.jpg" alt="Abstract network connection lines">
+                <span class="photo-caption">Link Hub</span>
+            </a>
+            
+            <a href="https://code.tabitha.dev/code/updated-resume/index.html" target="_blank" class="desk-item document resume-doc" data-depth="0.2">
+                <h4>View My Resume</h4>
+            </a>
+
+            <a href="https://code.tabitha.dev/code/index.html" target="_blank" class="desk-item sticky-note" data-depth="0.4">
+                <h4>+ More Projects</h4>
+            </a>
+            
+            <div class="desk-item contact-links" data-depth="0.1">
+                <a href="https://github.com/tabitha-dev" target="_blank" title="GitHub"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                <a href="https://www.linkedin.com/in/tabitha-dev" target="_blank" title="LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="about-modal"><div class="modal-content"><span class="modal-close">&times;</span><h2>My Approach</h2><img class="profile-pic" src="https://i.imgur.com/r6p6nZw.png" alt="Tabitha Khadse"><p><strong>I’m a frontend-focused full-stack developer with a background in medical billing and healthcare operations. I enjoy solving real-world problems by blending data, design, and technology.</strong></p><p>Before becoming a developer, I worked with tools like PointClickCare and payer portals to improve billing systems and find patterns in data. That experience taught me how small changes can lead to big results. I focus on the 80/20 rule and prioritize the work that makes the biggest difference.</p><p>Now I build web apps that are simple, helpful, and easy to use. I work with React, Vue, APIs, and sometimes 3D tools like Three.js. My projects include dashboards, voice tools, and interactive websites that help people learn or get things done more easily.</p><p>I like turning ideas into real apps and always look for ways to make things better. Check out my full portfolio at <a href="https://code.tabitha.dev/" target="_blank" class="modal-link">code.tabitha.dev</a>.</p></div></div>
+    <div class="modal-overlay" id="project-ecommerce-modal"><div class="modal-content"><span class="modal-close">&times;</span><h2>Project: Bloom & Stem</h2><img src="https://i.imgur.com/G5v9sJ8.png" alt="Bloom & Stem Screenshot"><p>A modern, stylish e-commerce showcase for a fictional flower shop. This project demonstrates strong HTML, CSS, and JavaScript fundamentals for creating an engaging user experience.</p><p><strong>Key Features:</strong> Dynamic hero slideshow, interactive product filtering by category, "Quick View" modals for product details, and elegant scroll-reveal animations.</p><p>Built with vanilla JavaScript to showcase core web development skills without framework dependencies.</p><a href="ecommerce.html" target="_blank" class="modal-link">View Live Demo &rarr;</a></div></div>
+    <div class="modal-overlay" id="project-dashboard-modal"><div class="modal-content"><span class="modal-close">&times;</span><h2>Project: Analytics Dashboard</h2><img src="https://i.imgur.com/gKj4dBR.png" alt="Analytics Dashboard Screenshot"><p>A sleek, modern analytics dashboard UI incorporating the latest design trends like dark mode and glassmorphism. It uses Chart.js to render beautiful, responsive data visualizations.</p><p><strong>Key Features:</strong> "Bento box" grid layout, advanced data visualizations (area and polar area charts), and a fully responsive design that looks great on any device.</p><p>This project showcases an eye for modern UI/UX and the ability to work with third-party libraries to create powerful data-driven interfaces.</p><a href="dashboard.html" target="_blank" class="modal-link">View Live Demo &rarr;</a></div></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const consoleStyle = ['background: #5D5FEF','color: white','font-size: 1.2em','padding: 10px','border-radius: 8px'].join(';');
+            console.log('%cHey there, fellow developer! Thanks for checking out my code. Let\'s build something cool together. - Tabitha', consoleStyle);
+            const container = document.getElementById('workbench-container');
+            const deskItems = document.querySelectorAll('.desk-item');
+            const originalTransforms = new Map();
+            deskItems.forEach(item => {
+                const computedTransform = window.getComputedStyle(item).transform;
+                originalTransforms.set(item, computedTransform === 'none' ? '' : computedTransform);
+                item.style.setProperty('--transform-initial', originalTransforms.get(item));
+            });
+            container.addEventListener('mousemove', (e) => {
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                const { clientX, clientY } = e;
+                const { left, top, width, height } = container.getBoundingClientRect();
+                const x = (clientX - left - width / 2) / (width / 2);
+                const y = (clientY - top - height / 2) / (height / 2);
+                requestAnimationFrame(() => {
+                    deskItems.forEach(item => {
+                        const depth = parseFloat(item.dataset.depth || 0.2);
+                        const moveX = x * - (20 * depth);
+                        const moveY = y * - (20 * depth);
+                        const originalTransform = originalTransforms.get(item);
+                        item.style.transform = `translate(${moveX}px, ${moveY}px) ${originalTransform}`;
+                    });
+                });
+            });
+            container.addEventListener('mouseleave', () => {
+                requestAnimationFrame(() => deskItems.forEach(item => item.style.transform = originalTransforms.get(item)));
+            });
+            const laptopContentEl = document.getElementById('laptop-content');
+            const linesToType = [
+                `<span class="prompt">> ABOUT.md</span>\n\n`,
+                `<span class="keyword">name:</span> <span class="string">"Tabitha Khadse"</span>\n`,
+                `<span class="keyword">title:</span> <span class="string">"Full-Stack Developer"</span>\n`,
+                `<span class="keyword">focus:</span> <span class="string">"Blending data, design & tech"</span>`,
+            ];
+            let lineIndex = 0, charIndex = 0, htmlString = '';
+            function type() {
+                if (lineIndex < linesToType.length) {
+                    const line = linesToType[lineIndex];
+                    if (charIndex < line.length) {
+                        htmlString += line.charAt(charIndex);
+                        laptopContentEl.innerHTML = htmlString;
+                        charIndex++;
+                        setTimeout(type, 40);
+                    } else {
+                        htmlString += '\n'; lineIndex++; charIndex = 0; setTimeout(type, 300);
+                    }
+                } else {
+                    laptopContentEl.innerHTML = htmlString + '<span class="prompt">> </span><span class="cursor"></span>';
+                }
+            }
+            type();
+            
+            document.getElementById('desk-lamp').addEventListener('click', () => {
+                container.classList.toggle('lamp-on');
+            });
+            const openModalTriggers = document.querySelectorAll('[data-modal-target]');
+            const closeModalTriggers = document.querySelectorAll('.modal-close');
+            const overlays = document.querySelectorAll('.modal-overlay');
+            const openModal = (modalId) => {
+                const modal = document.getElementById(modalId);
+                if (modal) modal.classList.add('is-visible');
+            };
+            const closeModal = (modal) => {
+                if(modal) modal.classList.remove('is-visible');
+            };
+            openModalTriggers.forEach(trigger => {
+                trigger.addEventListener('click', () => {
+                    const modalId = trigger.getAttribute('data-modal-target');
+                    openModal(modalId);
+                });
+            });
+            closeModalTriggers.forEach(trigger => {
+                trigger.addEventListener('click', () => closeModal(trigger.closest('.modal-overlay')));
+            });
+            overlays.forEach(overlay => {
+                overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(overlay); });
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal(document.querySelector('.modal-overlay.is-visible'));
+            });
+        });
+    </script>
+</body>
+</html>
