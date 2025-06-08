@@ -1,1 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bloom & Stem | Artisan Botanicals</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
+    <style>
+        :root {
+            --bg-main: #FBFBFB;
+            --text-primary: #1a1a1a;
+            --text-secondary: #6b6b6b;
+            --accent-primary: #8E44AD;
+            --accent-secondary: #C0392B;
+            --border-color: #EAEAEA;
+            --font-heading: 'Lora', serif;
+            --font-body: 'Poppins', sans-serif;
+            --shadow: 0 10px 30px rgba(0,0,0,0.07);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+        }
+
+        /* --- Header --- */
+        header {
+            background: rgba(251, 251, 251, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 1.5rem 3rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky; top: 0; z-index: 1000;
+        }
+        header .logo {
+            font-family: var(--font-heading);
+            font-size: 2.25rem; font-weight: 600;
+            text-decoration: none; color: var(--text-primary);
+        }
+        header nav { display: flex; align-items: center; gap: 2rem; }
+        header nav a {
+            text-decoration: none; color: var(--text-secondary);
+            font-weight: 500; transition: color 0.3s;
+        }
+        header nav a:hover { color: var(--accent-primary); }
+        .cart-indicator { position: relative; cursor: pointer; }
+        .cart-indicator .cart-icon { width: 28px; height: 28px; stroke-width: 2; color: var(--text-primary); }
+        .cart-indicator .cart-count {
+            position: absolute; top: -8px; right: -10px;
+            background-color: var(--accent-secondary); color: white;
+            font-size: 0.75rem; font-weight: 500;
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            transform: scale(0); transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid var(--bg-main);
+        }
+        .cart-indicator .cart-count.active { transform: scale(1); }
+
+        .hero-section {
+            height: 70vh;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center;
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.pexels.com/photos/1105018/pexels-photo-1105018.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+            background-size: cover; background-position: center;
+            color: white;
+        }
+        .hero-content h1 {
+            font-family: var(--font-heading); font-size: 3.5rem;
+            font-weight: 600;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        main { padding: 4rem 2rem; }
+        .content-section { max-width: 1600px; margin: 0 auto 5rem auto; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-header h2 { font-family: var(--font-heading); font-size: 3.5rem; }
+        .section-header p { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0.5rem auto 0; }
+        
+        /* --- Filters --- */
+        .filter-container {
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: inline-flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            background: #fff;
+            padding: 0.75rem;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .filter-btn {
+            font-family: var(--font-body);
+            font-size: 0.9rem; font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            background: transparent;
+            border: none; color: var(--text-secondary);
+            border-radius: 50px; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-btn.active {
+            background: var(--accent-primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(142, 68, 173, 0.2);
+        }
+
+        /* --- Product Grid --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+        .product-card {
+            background: white;
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 8px 24px var(--shadow-light);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .product-card.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            width: 0; height: 0; margin: -1rem; padding: 0;
+            pointer-events: none;
+        }
+        .product-card .image-container {
+            width: 100%; height: 380px; overflow: hidden;
+            position: relative; background-color: #eee;
+        }
+        .product-card .image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .product-card:hover .image-container img { transform: scale(1.05); }
+
+        .quick-add-overlay {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            display: flex;
+            justify-content: space-around;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .product-card:hover .quick-add-overlay { opacity: 1; transform: translateY(0); }
+        .quick-add-btn {
+            background: rgba(255,255,255,0.9);
+            border: none; border-radius: 50px;
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem; font-weight: 500;
+            cursor: pointer; transition: background 0.2s, color 0.2s;
+        }
+        .quick-add-btn:hover { background: var(--accent-primary); color: white; }
+        .quick-add-btn.added { background: #27ae60; color: white; }
+        
+        .product-card .card-content { padding: 1.5rem; text-align: center; }
+        .product-card .product-name { font-size: 1.3rem; margin-bottom: 0.25rem; font-weight: 500; }
+        .product-card .product-price { font-size: 1.1rem; color: var(--text-secondary); }
+
+        /* --- Add to Cart Animation --- */
+        .fly-to-cart {
+            position: absolute; width: 50px; height: 50px;
+            border-radius: 50%; object-fit: cover; z-index: 1100;
+            transition: all 1s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+        }
+        
+        footer { background: #222; color: white; text-align: center; padding: 3rem 2rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="#" class="logo">Bloom & Stem</a>
+        <nav>
+            <a href="#shop">Shop</a>
+            <a href="#">About</a>
+            <div class="cart-indicator" id="cart-indicator">
+                <svg class="cart-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                <span class="cart-count" id="cart-count">0</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>Artisan Botanicals for the Modern Home</h1>
+        </div>
+    </div>
+
+    <main>
+        <section id="shop" class="content-section">
+            <div class="section-header">
+                <h2>Our Collections</h2>
+                <p>Curated floral arrangements and houseplants, inspired by the seasons.</p>
+            </div>
+            
+            <div class="filter-container">
+                <div class="filter-group" id="season-filters">
+                    <button class="filter-btn active" data-filter="all">All Seasons</button>
+                    <button class="filter-btn" data-filter="spring">Spring</button>
+                    <button class="filter-btn" data-filter="summer">Summer</button>
+                    <button class="filter-btn" data-filter="autumn">Autumn</button>
+                    <button class="filter-btn" data-filter="winter">Winter</button>
+                </div>
+                <div class="filter-group" id="type-filters">
+                     <button class="filter-btn active" data-filter="all">All Types</button>
+                     <button class="filter-btn" data-filter="bouquet">Bouquets</button>
+                     <button class="filter-btn" data-filter="potted">Potted</button>
+                </div>
+            </div>
+
+            <div class="product-grid" id="product-grid">
+                <!-- Products will be dynamically inserted here -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Bloom & Stem. A Fictional Showcase by Tabitha Khadse.</p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const products = [
+                { id: 1, name: 'Spring Meadow', price: 48.00, image: "https://images.pexels.com/photos/298246/pexels-photo-298246.jpeg?cs=srgb&dl=nature-field-flowers-298246.jpg&fm=jpg", season: "spring", type: "bouquet" },
+                { id: 2, name: 'Pink Peonies', price: 65.00, image: "https://tse4.mm.bing.net/th?id=OIP.MXXcVA3-a55KwAUXCG5HAAHaE8&pid=Api", season: "spring", type: "bouquet" },
+                { id: 3, name: 'The Violet Plant', price: 45.00, image: "https://www.goodfreephotos.com/albums/plants/violet-flower.jpg", season: "spring", type: "potted" },
+                { id: 4, name: 'Cherry Blossoms', price: 72.00, image: "https://wallpapercave.com/wp/398eJDV.jpg", season: "spring", type: "bouquet" },
+                { id: 5, name: 'Summer Rose', price: 68.00, image: "https://images.pexels.com/photos/63638/roses-flower-nature-macro-63638.jpeg?cs=srgb&dl=bloom-blossom-flora-63638.jpg&fm=jpg", season: "summer", type: "bouquet" },
+                { id: 6, name: 'Sunflower Plant', price: 55.00, image: "https://cdn.wallpapersafari.com/88/11/Dqhb8o.jpg", season: "summer", type: "potted" },
+                { id: 7, name: 'Lavender Calm', price: 52.00, image: "https://c.pxhere.com/photos/a4/1e/lavender_field_flowers_purple_flora_floral_lavender_lavender_flowers_blue-483682.jpg!d", season: "summer", type: "bouquet" },
+                { id: 8, name: 'Vibrant Cosmos', price: 60.00, image: "https://c.pxhere.com/images/97/67/a1d8006025137144702b9879c0cd-1418295.jpg!d", season: "summer", type: "bouquet" },
+                { id: 9, name: 'Autumn Dahlia', price: 72.00, image: 'https://hips.hearstapps.com/hmg-prod/images/summer-flowers-dahlia-1648236478.jpg?crop=0.535xw:1.00xh;0.193xw,0&resize=980:*', season: "autumn", type: "bouquet" },
+                { id: 10, name: 'Marigold Sunset', price: 48.00, image: 'https://hips.hearstapps.com/hmg-prod/images/summer-flowers-marigold-642f0eae1af23.jpg?crop=0.532xw:1.00xh;0.337xw,0&resize=980:*', season: "autumn", type: "potted" },
+                { id: 11, name: 'Warm Chrysanthemum', price: 65.00, image: 'https://images.unsplash.com/photo-1478703183925-97589aa246e9?q=80&w=2676&auto=format&fit=crop', season: "autumn", type: "bouquet" },
+                { id: 12, name: 'Goldenrod Fields', price: 50.00, image: 'https://plus.unsplash.com/premium_photo-1666899829236-0fc4e8ac0116?w=500&auto=format&fit=crop&q=60', season: "autumn", type: "bouquet" },
+                { id: 13, name: 'Crimson Amaryllis', price: 70.00, image: 'https://plus.unsplash.com/premium_photo-1673804199294-76b788abf2eb?q=80&w=2670&auto=format&fit=crop', season: "winter", type: "potted" },
+                { id: 14, name: 'Pink Cyclamen', price: 55.00, image: 'https://www.lawnstarter.com/blog/wp-content/uploads/2020/10/cyclamen-pixabay.jpg', season: "winter", type: "potted" },
+                { id: 15, name: 'Witch Hazel', price: 60.00, image: 'https://lawnlove.com/blog/wp-content/uploads/2022/01/Witch-hazel-2.jpg', season: "winter", type: "potted" },
+                { id: 16, name: 'Early Snowdrops', price: 52.00, image: 'https://www.lawnstarter.com/blog/wp-content/uploads/2020/10/Snowdrops-winter-pixabay.jpg', season: "winter", type: "bouquet" }
+            ];
+
+            const productGrid = document.getElementById('product-grid');
+            const cartCountElement = document.getElementById('cart-count');
+            const cartIndicator = document.getElementById('cart-indicator');
+            let cartItemCount = 0;
+            let currentSeasonFilter = 'all';
+            let currentTypeFilter = 'all';
+
+            const renderProducts = () => {
+                productGrid.querySelectorAll('.product-card').forEach(card => card.classList.add('hidden'));
+
+                setTimeout(() => {
+                    productGrid.innerHTML = '';
+                    const filteredProducts = products.filter(p => 
+                        (currentSeasonFilter === 'all' || p.season === currentSeasonFilter) &&
+                        (currentTypeFilter === 'all' || p.type === currentTypeFilter)
+                    );
+
+                    filteredProducts.forEach((product) => {
+                        const card = document.createElement('div');
+                        card.className = 'product-card';
+                        card.innerHTML = `
+                            <div class="image-container">
+                                <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x380/cccccc/ffffff?text=Image+Error';">
+                                <div class="quick-add-overlay">
+                                    <button class="quick-add-btn" data-size="Standard">Standard</button>
+                                    <button class="quick-add-btn" data-size="Deluxe">Deluxe</button>
+                                    <button class="quick-add-btn" data-size="Grand">Grand</button>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <h4 class="product-name">${product.name}</h4>
+                                <p class="product-price">$${product.price.toFixed(2)}</p>
+                            </div>`;
+                        productGrid.appendChild(card);
+                    });
+                    setupAddToCartListeners();
+                    setupScrollAnimations();
+                }, 500);
+            };
+
+            const setupAddToCartListeners = () => {
+                document.querySelectorAll('.quick-add-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (button.closest('.quick-add-overlay').querySelector('.added')) return;
+
+                        const card = button.closest('.product-card');
+                        const imgToFly = card.querySelector('img');
+                        const imgClone = imgToFly.cloneNode();
+                        const rect = imgToFly.getBoundingClientRect();
+                        
+                        imgClone.style.left = `${rect.left}px`;
+                        imgClone.style.top = `${rect.top}px`;
+                        imgClone.classList.add('fly-to-cart');
+                        document.body.appendChild(imgClone);
+
+                        requestAnimationFrame(() => {
+                            const cartRect = cartIndicator.getBoundingClientRect();
+                            imgClone.style.left = `${cartRect.left + (cartRect.width / 2)}px`;
+                            imgClone.style.top = `${cartRect.top + (cartRect.height / 2)}px`;
+                            imgClone.style.transform = 'scale(0.1)';
+                            imgClone.style.opacity = '0';
+                        });
+                        
+                        cartItemCount++;
+                        cartCountElement.textContent = cartItemCount;
+                        cartCountElement.classList.add('active');
+                        
+                        button.closest('.quick-add-overlay').querySelectorAll('.quick-add-btn').forEach(btn => {
+                            btn.classList.add('added'); btn.textContent = 'Added!';
+                        });
+                        
+                        imgClone.addEventListener('transitionend', () => imgClone.remove());
+                    });
+                });
+            };
+
+            const setupFilterListeners = (filterGroupId, filterVariableSetter) => {
+                 const filterGroup = document.getElementById(filterGroupId);
+                 filterGroup.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('filter-btn')) {
+                        filterGroup.querySelector('.active').classList.remove('active');
+                        e.target.classList.add('active');
+                        filterVariableSetter(e.target.dataset.filter);
+                        renderProducts();
+                    }
+                 });
+            };
+            
+            setupFilterListeners('season-filters', (value) => currentSeasonFilter = value);
+            setupFilterListeners('type-filters', (value) => currentTypeFilter = value);
+            
+            const setupScrollAnimations = () => {
+                 const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry, index) => {
+                        if (entry.isIntersecting) {
+                            setTimeout(() => {
+                                entry.target.classList.add('is-visible');
+                            }, index * 100);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                document.querySelectorAll('.product-card').forEach(item => observer.observe(item));
+            };
+            
+            renderProducts();
+        });
+    </script>
+</body>
+</html>
