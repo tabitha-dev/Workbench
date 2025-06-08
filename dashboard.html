@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Project Metrics</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --bg-main: #101418;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --accent-color: #5D5FEF;
+            --font-main: 'Figtree', sans-serif;
+            
+            --gradient-blue: linear-gradient(135deg, #38BDF8, #3B82F6);
+            --gradient-green: linear-gradient(135deg, #4ADE80, #22C55E);
+            --gradient-orange: linear-gradient(135deg, #FBBF24, #F97316);
+            --gradient-purple: linear-gradient(135deg, #A78BFA, #7C3AED);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: clamp(1rem, 5vw, 3rem);
+        }
+
+        .dashboard-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 700;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* --- Bento Grid Layout --- */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: minmax(100px, auto);
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        
+        /* --- Bento Grid Item Spanning --- */
+        .main-chart-card { grid-column: span 12; grid-row: span 2; }
+        .side-chart-card { grid-column: span 12; grid-row: span 2; }
+        .kpi-card { grid-column: span 12; }
+        .activity-feed-card { grid-column: span 12; }
+
+
+        @media (min-width: 768px) {
+            .kpi-card { grid-column: span 6; }
+        }
+
+        @media (min-width: 1024px) {
+            .main-chart-card { grid-column: 1 / 9; grid-row: span 2; }
+            .side-chart-card { grid-column: 9 / 13; grid-row: span 2; }
+            .kpi-card { grid-column: span 3; }
+            .activity-feed-card { grid-column: span 12; grid-row: span 1; }
+        }
+
+        /* --- Card Content --- */
+        .kpi-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .kpi-change {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .kpi-change.positive { color: #4ADE80; }
+        .kpi-change.negative { color: #F87171; }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .timeframe-filter {
+            display: flex;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 4px;
+        }
+        .timeframe-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+        .timeframe-btn.active {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 350px;
+        }
+        
+        /* --- Activity Feed --- */
+        .activity-feed {
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .activity-icon.user { background: rgba(56, 189, 248, 0.2); color: #38BDF8; }
+        .activity-icon.sale { background: rgba(74, 222, 128, 0.2); color: #4ADE80; }
+        .activity-icon.server { background: rgba(249, 115, 22, 0.2); color: #F97316; }
+        .activity-text { flex-grow: 1; }
+        .activity-time { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header>
+            <h1>Analytics Dashboard</h1>
+            <p>Welcome back, Admin. Here's your project overview.</p>
+        </header>
+        
+        <div class="bento-grid">
+            
+            <div class="card main-chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">User Growth</h3>
+                    <div class="timeframe-filter" id="timeframe-filter">
+                        <button class="timeframe-btn" data-frame="7D">7D</button>
+                        <button class="timeframe-btn active" data-frame="30D">30D</button>
+                        <button class="timeframe-btn" data-frame="90D">90D</button>
+                        <button class="timeframe-btn" data-frame="1Y">1Y</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card side-chart-card">
+                <h3 class="chart-title">Device Breakdown</h3>
+                <div class="chart-container" style="height: 350px;">
+                    <canvas id="deviceBreakdownChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <h3 class="kpi-title">Monthly Revenue</h3>
+                <p class="kpi-value" id="revenue-kpi">$83,291</p>
+                <span class="kpi-change positive">+8.2%</span>
+            </div>
+            
+            <div class="card kpi-card">
+                <h3 class="kpi-title">New Users</h3>
+                <p class="kpi-value" id="users-kpi">1,204</p>
+                <span class="kpi-change positive">+12.5%</span>
+            </div>
+
+            <div class="card kpi-card">
+                <h3 class="kpi-title">Engagement</h3>
+                <p class="kpi-value" id="engagement-kpi">63.8%</p>
+                <span class="kpi-change negative">-1.1%</span>
+            </div>
+
+            <div class="card kpi-card">
+                <h3 class="kpi-title">Server Load</h3>
+                <p class="kpi-value" id="server-kpi">34%</p>
+                <span class="kpi-change positive">Normal</span>
+            </div>
+            
+            <div class="card activity-feed-card">
+                <h3 class="chart-title">Recent Activity</h3>
+                <div class="activity-feed" id="activity-feed">
+                    <!-- Activity items will be inserted here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chartConfig = {
+                fontFamily: "'Figtree', sans-serif",
+                gridColor: 'rgba(255, 255, 255, 0.1)',
+                textColor: '#94A3B8',
+                tooltipBg: '#1E293B',
+            };
+            
+            Chart.defaults.font.family = chartConfig.fontFamily;
+            Chart.defaults.color = chartConfig.textColor;
+
+            // --- FIX: Get CSS variable value for use in JavaScript ---
+            const accentColorValue = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+
+            // --- Generate Mock Data for Different Timeframes ---
+            const generateChartData = (days) => {
+                const labels = [];
+                const data = [];
+                let value = 10000;
+                for (let i = days - 1; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    labels.push(date);
+                    value += (Math.random() - 0.45) * 500;
+                    data.push(value);
+                }
+                return { labels, data };
+            };
+
+            const chartDataSets = {
+                '7D': generateChartData(7),
+                '30D': generateChartData(30),
+                '90D': generateChartData(90),
+                '1Y': generateChartData(365),
+            };
+
+            const growthCtx = document.getElementById('userGrowthChart').getContext('2d');
+            const gradient = growthCtx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(93, 95, 239, 0.5)');
+            gradient.addColorStop(1, 'rgba(93, 95, 239, 0)');
+
+            const userGrowthChart = new Chart(growthCtx, {
+                type: 'line',
+                data: {
+                    labels: chartDataSets['30D'].labels,
+                    datasets: [{
+                        label: 'Total Users',
+                        data: chartDataSets['30D'].data,
+                        backgroundColor: gradient,
+                        borderColor: accentColorValue, /* FIX: Use JS variable instead of CSS var() */
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { backgroundColor: chartConfig.tooltipBg } },
+                    scales: {
+                        y: { border: { display: false }, grid: { color: chartConfig.gridColor } },
+                        x: { type: 'time', time: { unit: 'day' }, border: { display: false }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // --- Timeframe Filter Logic ---
+            const filterContainer = document.getElementById('timeframe-filter');
+            filterContainer.addEventListener('click', (e) => {
+                if(e.target.classList.contains('timeframe-btn')) {
+                    filterContainer.querySelector('.active').classList.remove('active');
+                    e.target.classList.add('active');
+                    const selectedFrame = e.target.dataset.frame;
+                    const newData = chartDataSets[selectedFrame];
+                    userGrowthChart.data.labels = newData.labels;
+                    userGrowthChart.data.datasets[0].data = newData.data;
+                    
+                    let unit = 'day';
+                    if (selectedFrame === '1Y') unit = 'month';
+                    userGrowthChart.options.scales.x.time.unit = unit;
+
+                    userGrowthChart.update();
+                }
+            });
+
+            // --- "Live" KPI & Activity Feed Simulation ---
+            const kpiElements = {
+                revenue: document.getElementById('revenue-kpi'),
+                users: document.getElementById('users-kpi'),
+                engagement: document.getElementById('engagement-kpi'),
+                server: document.getElementById('server-kpi'),
+            };
+
+            const activityFeed = document.getElementById('activity-feed');
+            const activities = [
+                { icon: '👤', text: 'New user signup: alex@example.com', time: '1m ago', type: 'user'},
+                { icon: '💰', text: 'Sale of $129.99 processed', time: '5m ago', type: 'sale'},
+                { icon: '🖥️', text: 'Server CPU usage at 85%', time: '15m ago', type: 'server'},
+            ];
+            
+            const addActivity = (item) => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.innerHTML = `<div class="activity-icon ${item.type}">${item.icon}</div><p class="activity-text">${item.text}</p><span class="activity-time">${item.time}</span>`;
+                activityFeed.prepend(activityItem);
+                if (activityFeed.children.length > 5) {
+                    activityFeed.lastChild.remove();
+                }
+            };
+            activities.forEach(addActivity);
+
+            setInterval(() => {
+                // Simulate KPI change
+                kpiElements.revenue.textContent = `$${(83291 + (Math.random() - 0.5) * 1000).toFixed(2)}`;
+                kpiElements.users.textContent = `${(12483 + Math.floor((Math.random() - 0.4) * 10))}`;
+
+                // Simulate new activity
+                if (Math.random() > 0.7) {
+                    const newActivity = { icon: '👤', text: `New user signup: user${Math.floor(Math.random()*1000)}@test.com`, time: '1s ago', type: 'user' };
+                    addActivity(newActivity);
+                }
+            }, 5000);
+
+            // --- Device Breakdown Chart (same as before) ---
+            const deviceCtx = document.getElementById('deviceBreakdownChart').getContext('2d');
+            new Chart(deviceCtx, { type: 'polarArea', data: { labels: ['Desktop', 'Tablet', 'Mobile'], datasets: [{ label: 'Device Usage', data: [65, 15, 25], backgroundColor: [ 'rgba(167, 139, 250, 0.5)', 'rgba(56, 189, 248, 0.5)', 'rgba(74, 222, 128, 0.5)' ], borderColor: [ '#A78BFA', '#38BDF8', '#4ADE80' ], borderWidth: 2, }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 20 } }, tooltip: { backgroundColor: chartConfig.tooltipBg } }, scales: { r: { border: { color: chartConfig.gridColor }, grid: { color: chartConfig.gridColor }, ticks: { backdropColor: 'transparent', color: chartConfig.textColor } } } } });
+        });
+    </script>
+</body>
+</html>
