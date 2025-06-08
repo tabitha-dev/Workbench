@@ -1,56 +1,92 @@
-The Coder's Workbench: My Interactive Portfolio
-A creative portfolio designed as a developer's digital workbench, built with vanilla HTML, CSS, and JavaScript.
-✨ View the Live Demo!
-(Pro Tip: Replace this with a screen recording (GIF) of you interacting with the desk items. This is a huge "wow" factor! You can use a tool like Giphy Capture or Kap.)
+# 🖥️ The Coder's Workbench – My Interactive Portfolio ⌨️
 
-🚀 About This Project
+An immersive, web-based 3D portfolio experience built with **vanilla HTML, CSS, and JavaScript**. Step into my digital workspace to explore my projects, skills, and creative approach to code.
+
+---
+
+## ✨ [View Live Demo](https://tabitha-dev.github.io/Workbench/)
+
+
+
+
+
+
+
+<br>
+
+## 🚀 About This Project
+
 I built this project to be more than just a standard list of links. The "Coder's Workbench" is a fully interactive, single-page application that serves as my digital portfolio. The concept was to create a tangible and memorable experience for visitors, allowing them to explore my projects and skills in a unique way.
 
-The entire experience, including the refined parallax effect, interactive lamp, and live-typing animations, is built with 100% vanilla HTML, CSS, and JavaScript to showcase a deep understanding of core web technologies without relying on frameworks.
+The entire experience, including the refined parallax effect, interactive lamp, and live-typing animations, is built with **100% vanilla HTML, CSS, and JavaScript** to showcase a deep understanding of core web technologies without relying on frameworks.
 
-🌟 Key Features
-Interactive Parallax Desk: Items on the desk subtly float based on mouse movement, creating a beautiful 3D effect.
+## 🔥 Features at a Glance
 
-"Live" Components: The laptop and notebook feature dynamic "live-typing" animations to draw the user's attention to key information.
+* **🪐 Interactive Parallax Desk:** All items on the desk subtly float and shift based on mouse movement for a realistic 3D effect.
+* **💡 Ambient Lighting Toggle:** Click the desk lamp to switch between a focused warm light and a cool ambient mood.
+* **✍️ Live-Typing Animations:** Watch my bio and skills get typed out in real-time on the laptop.
+* **📂 Detailed Project Modals:** Click on key projects to open a detailed modal with descriptions and links to the live demos.
+* **🤫 Developer "Easter Egg":** A special message for fellow developers who open the browser console.
+* **🔗 Fully Linked:** Seamlessly navigate to my other projects, my resume, and my social profiles.
 
-Ambiance Toggle: A clickable desk lamp that changes the lighting and mood of the entire scene.
+---
 
-Developer "Easter Egg": A custom, styled message for fellow developers who open the browser console.
+## 🛠️ Tech Stack
 
-🛠️ My Tech Stack
 This project is a testament to the power of foundational web technologies.
 
-Tech
+| Tech                |   
+| ------------------- | 
+| **HTML5** | 
+| **CSS3** | 
+| **JavaScript (ES6+)** |
 
-Logo
+---
 
-HTML5
+## 📂 Projects Included
 
-CSS3
+This repository contains all three connected parts of my portfolio showcase, organized for easy hosting on GitHub Pages:
 
-JavaScript (ES6+)
+```
+.
+├── 📄 index.html      
+├── 📄 ecommerce.html  
+├── 📄 dashboard.html  
+└── 📄 README.md
+```
 
-📂 Projects Included
-This repository contains all three connected parts of my portfolio showcase:
+---
 
-index.html: The main "Coder's Workbench" portfolio hub.
+## 🏃‍♀️ Getting Started
 
-ecommerce.html: The "Bloom & Stem" e-commerce project.
-
-dashboard.html: The "Analytics Dashboard" project.
-
-🏃‍♀️ Getting Started
 To get a local copy up and running, simply follow these steps.
 
-Clone the repository:
+1.  **Clone the repository:**
+    ```sh
+    git clone [https://github.com/tabitha-dev/Workbench.git](https://github.com/tabitha-dev/Workbench.git)
+    ```
+2.  **Open `index.html`** in your favorite web browser.
 
-git clone https://github.com/tabitha-dev/Workbench.git
+---
 
-Open index.html in your favorite web browser.
+## 🤝 Contribute to the Project
 
-🙏 Acknowledgements
-Fonts: Google Fonts
+I'm excited to collaborate with other developers to improve this portfolio!
 
-Textures: Transparent Textures
+1.  **Fork the Repository**
+2.  **Create your Feature Branch** (`git checkout -b feature/AmazingFeature`)
+3.  **Commit your Changes** (`git commit -m 'Add some AmazingFeature'`)
+4.  **Push to the Branch** (`git push origin feature/AmazingFeature`)
+5.  **Open a Pull Request**
 
-Images: Pexels & Unsplash
+---
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+## 📬 Contact
+
+Tabitha Khadse - [LinkedIn](https://www.linkedin.com/in/tabitha-dev) - [My Portfolio](https://code.tabitha.dev/)
